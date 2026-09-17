@@ -1,0 +1,4 @@
+FROM nousresearch/hermes-agent:latest
+
+COPY --chmod=644 hermes-skills/gmail-send/SKILL.md /opt/data/skills/gmail-send/SKILL.md
+COPY --chmod=755 hermes-skills/gmail-send/send_email.py /opt/data/skills/gmail-send/send_email.py
