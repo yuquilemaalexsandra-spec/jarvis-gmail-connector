@@ -14,7 +14,7 @@ fi
 # root-only init phase, then hand the temporary copy to the hermes user.
 install -d -m 0700 "$RUNTIME_DIR"
 cp "$SOURCE" "$RUNTIME_SECRET"
-chown hermes:hermes "$RUNTIME_SECRET"
+chown hermes:hermes "$RUNTIME_DIR" "$RUNTIME_SECRET"
 chmod 0600 "$RUNTIME_SECRET"
 
 echo "Codex auth bootstrap: staged Render secret for hermes"
