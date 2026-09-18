@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
 import json
 import os
-import shutil
 from pathlib import Path
 
-SECRET = Path("/etc/secrets/auth.json")
-DEST = Path("/opt/data/auth.json")
+SECRET = Path(os.environ.get("CODEX_AUTH_SECRET_PATH", "/run/hermes-render/auth.json"))
+DEST = Path(os.environ.get("HERMES_AUTH_PATH", "/opt/data/auth.json"))
 
 if not SECRET.exists():
-    raise SystemExit("Codex auth bootstrap: /etc/secrets/auth.json is missing")
+    raise SystemExit(f"Codex auth bootstrap: {SECRET} is missing")
 
 DEST.parent.mkdir(parents=True, exist_ok=True)
-shutil.copyfile(SECRET, DEST)
 
-with DEST.open("r", encoding="utf-8-sig") as f:
+with SECRET.open("r", encoding="utf-8-sig") as f:
     data = json.load(f)
 
 providers = data.setdefault("providers", {})
