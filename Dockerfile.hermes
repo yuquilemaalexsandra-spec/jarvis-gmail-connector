@@ -11,4 +11,6 @@ RUN printf 'model:\n  default: gpt-5.6-sol\n  provider: openai-codex\n' > /opt/d
 ENV HERMES_INFERENCE_PROVIDER=openai-codex
 ENV HERMES_INFERENCE_MODEL=gpt-5.6-sol
 
-CMD ["gateway", "run"]
+# Render secret files are mounted at /etc/secrets at runtime.
+# If auth.json is present there, copy it into Hermes' home before starting.
+CMD ["sh", "-lc", "if [ -f /etc/secrets/auth.json ]; then cp /etc/secrets/auth.json /opt/data/auth.json && chmod 600 /opt/data/auth.json; fi; exec gateway run"]
