@@ -13,4 +13,4 @@ ENV HERMES_INFERENCE_MODEL=gpt-5.6-sol
 
 # Render secret files are mounted at /etc/secrets at runtime.
 # If auth.json is present there, copy it into Hermes' home before starting.
-CMD ["sh", "-lc", "if [ -f /etc/secrets/auth.json ]; then cp /etc/secrets/auth.json /opt/data/auth.json && chmod 600 /opt/data/auth.json; fi; exec gateway run"]
+CMD ["sh", "-lc", "if [ -f /etc/secrets/auth.json ]; then cp /etc/secrets/auth.json /opt/data/auth.json && chmod 600 /opt/data/auth.json; fi; exec hermes gateway run"]
