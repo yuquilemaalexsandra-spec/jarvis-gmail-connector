@@ -3,4 +3,12 @@ FROM nousresearch/hermes-agent:latest
 COPY --chmod=644 hermes-skills/gmail-send/SKILL.md /opt/data/skills/gmail-send/SKILL.md
 COPY --chmod=755 hermes-skills/gmail-send/send_email.py /opt/data/skills/gmail-send/send_email.py
 
+# Force Hermes to use OpenAI directly instead of the stale OpenRouter profile.
+RUN printf 'model:\n  default: gpt-5.6-sol\n  provider: openai-api\n' > /opt/data/config.yaml \
+    && chown 10000:10000 /opt/data/config.yaml \
+    && chmod 600 /opt/data/config.yaml
+
+ENV HERMES_INFERENCE_PROVIDER=openai-api
+ENV HERMES_INFERENCE_MODEL=gpt-5.6-sol
+
 CMD ["gateway", "run"]
