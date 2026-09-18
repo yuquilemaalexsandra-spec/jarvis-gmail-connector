@@ -1,16 +1,14 @@
 FROM nousresearch/hermes-agent:latest
 
-# Store Render-specific assets outside /opt/data because /opt/data is a runtime volume.
 RUN mkdir -p /opt/hermes/render-assets/gmail-send
 
 COPY --chmod=644 hermes-skills/gmail-send/SKILL.md /opt/hermes/render-assets/gmail-send/SKILL.md
 COPY --chmod=755 hermes-skills/gmail-send/send_email.py /opt/hermes/render-assets/gmail-send/send_email.py
+COPY --chmod=755 render_codex_auth.py /opt/hermes/render_codex_auth.py
 
 RUN printf 'model:\n  default: gpt-5.6-sol\n  provider: openai-codex\n' > /opt/hermes/render-config.yaml
 
 ENV HERMES_INFERENCE_PROVIDER=openai-codex
 ENV HERMES_INFERENCE_MODEL=gpt-5.6-sol
 
-# At runtime, after the base image initializes /opt/data, copy the forced config,
-# Codex OAuth secret, and Gmail skill into Hermes' writable home.
-CMD ["sh", "-c", "cp /opt/hermes/render-config.yaml /opt/data/config.yaml && mkdir -p /opt/data/skills/gmail-send && cp /opt/hermes/render-assets/gmail-send/SKILL.md /opt/data/skills/gmail-send/SKILL.md && cp /opt/hermes/render-assets/gmail-send/send_email.py /opt/data/skills/gmail-send/send_email.py && chmod 755 /opt/data/skills/gmail-send/send_email.py && if [ -f /etc/secrets/auth.json ]; then cp /etc/secrets/auth.json /opt/data/auth.json && chmod 600 /opt/data/auth.json; fi; exec /opt/hermes/.venv/bin/hermes gateway run"]
+CMD ["sh", "-c", "cp /opt/hermes/render-config.yaml /opt/data/config.yaml && mkdir -p /opt/data/skills/gmail-send && cp /opt/hermes/render-assets/gmail-send/SKILL.md /opt/data/skills/gmail-send/SKILL.md && cp /opt/hermes/render-assets/gmail-send/send_email.py /opt/data/skills/gmail-send/send_email.py && chmod 755 /opt/data/skills/gmail-send/send_email.py && /opt/hermes/.venv/bin/python /opt/hermes/render_codex_auth.py && exec /opt/hermes/.venv/bin/hermes gateway run"]
